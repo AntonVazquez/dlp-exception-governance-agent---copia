@@ -1,89 +1,182 @@
 # Project Overview
 
-## The problem
+## Problem
 
-DLP exceptions are necessary, but they become a risk if they are not reviewed periodically. Security teams face several challenges:
+DLP exceptions are sometimes required to support legitimate business processes. However, without periodic review, they can create security and compliance risk.
 
-* Active exceptions with no usage that keep unnecessary permissions in place
-* Expired exceptions with real activity that have not been reviewed
-* Renewals approved without evidence of activity
-* Requests, approvals and alerts stored separately
+Common challenges include:
 
----
-
-## The solution
-
-The agent combines two perspectives that are usually reviewed separately:
-
-```
-DLP exception inventory  →  who requested it, status, expiry date
-DLP alerts export        →  real activity by user and policy
-```
-
-Instead of correlating this data manually, the agent does it automatically and returns an analysis ready for action.
+- active exceptions with no recent usage,
+- expired exceptions still generating activity,
+- renewals approved without evidence,
+- requests, approvals and alerts stored separately,
+- manual Excel-based reviews,
+- subjective prioritization.
 
 ---
 
-## Process context
+## Solution
 
-The MVP is based on a realistic exception management process:
+The DLP Exception Governance Agent combines exception inventory data with DLP alert activity.
 
-```
-User requests an exception (Microsoft Forms)
+```text
+Exception inventory → who requested it, status, expiry, approval state
+DLP alert export    → real activity by user, policy and date
+````
+
+The agent correlates both datasets and returns an action-oriented review.
+
+It can identify:
+
+* which exceptions are still active,
+* which exceptions are unused,
+* which exceptions are expired but still generating alerts,
+* which records are not ready for assessment,
+* which exceptions should be escalated, removed, reviewed or renewed.
+
+---
+
+## MVP process
+
+The MVP is based on a realistic exception management flow:
+
+```text
+User requests an exception
         ↓
-Power Automate records the request in Excel
+Request is recorded in the inventory
         ↓
-Manager approval
+Approval process is completed
         ↓
-Status update in the inventory
+Exception status is updated
         ↓
-Periodic export of DLP alerts
+DLP alerts are exported periodically
         ↓
-Analysis and update by the agent
+Agent correlates alerts and exceptions
+        ↓
+Agent calculates risk and recommends actions
+        ↓
+Inventory is updated when explicitly requested
 ```
 
 ---
 
-## Risk scoring
+## Agent architecture
 
-The agent applies configurable criteria to assess each exception:
+The agent is built with Microsoft Copilot Studio.
 
-| Criterion                    | Effect                    |
-| ---------------------------- | ------------------------- |
-| Expired exception            | Increases risk            |
-| Close to expiry              | Requires review           |
-| High number of recent alerts | Higher priority           |
-| No recent alerts             | Consider removal          |
-| Critical sensitive data type | Higher severity           |
-| Endpoint channel             | Higher potential exposure |
+It uses:
+
+| Component         | Purpose                                                         |
+| ----------------- | --------------------------------------------------------------- |
+| Excel inventory   | Stores exception records and governance fields                  |
+| DLP alerts export | Provides activity evidence                                      |
+| Power Automate    | Executes structured workflow logic                              |
+| Office Script     | Performs correlation, readiness validation and risk calculation |
+| `risk-scoring.md` | Defines the mandatory scoring model                             |
+| WorkIQ            | Optional contextual enrichment layer                            |
+
+The key design principle is:
+
+```text
+Structured tool = calculations
+Knowledge = documentation and rules
+WorkIQ = business context
+```
+
+This avoids using semantic search for row-level calculations.
+
+---
+
+## Risk and governance logic
+
+Risk is calculated only when the exception is ready for assessment.
+
+Required conditions:
+
+```text
+CommunicationStatus = Sent
+FormResponseStatus = Completed
+ApprovalStatus = Approved
+ExceptionStatus = Active or Expired
+```
+
+If the exception is not ready, the agent does not calculate risk.
+It explains the missing or invalid conditions instead.
+
+For eligible exceptions, the agent calculates risk using:
+
+* expiry status,
+* proximity to expiry,
+* alert volume,
+* sensitive data type,
+* channel.
+
+The output includes:
+
+* `AlertsLast30Days`,
+* `LastActivityDate`,
+* `RiskScore`,
+* `RiskLevel`,
+* `RiskExplanation`,
+* `RecommendedAction`.
 
 ---
 
 ## Project value
 
-| Before                                    | With the agent           |
-| ----------------------------------------- | ------------------------ |
-| Manual Excel review                       | Conversational query     |
-| Alerts and exceptions reviewed separately | Automatic correlation    |
-| Subjective prioritization                 | Risk scoring             |
-| Renewals without evidence                 | Activity-based decisions |
-| Manual inventory update                   | Assisted update          |
+| Before                                    | With the agent              |
+| ----------------------------------------- | --------------------------- |
+| Manual spreadsheet review                 | Conversational review       |
+| Alerts and exceptions reviewed separately | Automatic correlation       |
+| Subjective prioritization                 | Transparent risk scoring    |
+| Renewals without evidence                 | Activity-based decisions    |
+| Manual inventory update                   | Assisted update             |
+| Limited auditability                      | Point-by-point explanations |
+| Unclear ownership context                 | WorkIQ enrichment potential |
 
 ---
 
 ## Target users
 
-Security teams · DLP administrators · GRC · SOC · Compliance owners
+* Security teams
+* DLP administrators
+* SOC analysts
+* GRC teams
+* Compliance owners
+* Data protection teams
 
 ---
 
-## Future evolution
+## Example use cases
 
-| Improvement                              | Value                               |
-| ---------------------------------------- | ----------------------------------- |
-| Direct connection with Microsoft Purview | Removes manual exports              |
-| Advanced Power Automate flows            | Automates notifications and updates |
-| Dataverse                                | More robust data model              |
-| Power BI dashboards                      | Executive tracking                  |
-| Ticketing / SIEM integration             | More complete operations            |
+* Show all exceptions and readiness status.
+* Calculate alerts from the last 30 days for each exception.
+* Identify unused exceptions.
+* Identify expired exceptions still generating alerts.
+* Calculate the top riskiest exceptions.
+* Explain a risk score.
+* Recommend governance actions.
+* Run a weekly exception review.
+* Update the exception inventory.
+
+---
+
+## Current MVP outcome
+
+The MVP demonstrates how an agent can support DLP exception governance using a synthetic dataset.
+
+It can produce outputs such as:
+
+```text
+Total exceptions: 16
+Ready for assessment: 12
+Not ready for assessment: 4
+DLP alerts analyzed: 114
+Critical risk: 1
+High risk: 3
+Medium risk: 3
+Low risk: 5
+```
+
+This provides a clear basis for review, escalation, cleanup and renewal decisions.
 
