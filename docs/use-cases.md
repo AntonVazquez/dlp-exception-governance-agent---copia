@@ -64,6 +64,18 @@ Recommend an action for each active exception.
 Generate an executive summary of the DLP exception status.
 ```
 
+### Update the Excel inventory
+
+```text
+Update the exception inventory with AlertsLast30Days, LastActivityDate, RiskScore, RiskLevel and RecommendedAction.
+```
+
+### Update only eligible exceptions
+
+```text
+Update the Excel inventory only for exceptions that are ready for assessment. For the rest, explain why they were skipped.
+```
+
 ---
 
 ## Recommended actions
