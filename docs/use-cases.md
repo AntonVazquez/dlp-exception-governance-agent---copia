@@ -70,8 +70,6 @@ Generate an executive summary of the DLP exception status.
 Review and update the full exception inventory
 ```
 
-```
-
 ---
 
 ## Recommended actions
