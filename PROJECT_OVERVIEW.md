@@ -1,88 +1,89 @@
 # Project Overview
 
-## El problema
+## The problem
 
-Las excepciones DLP son necesarias, pero se convierten en riesgo si no se revisan periódicamente. Los equipos de seguridad se enfrentan a:
+DLP exceptions are necessary, but they become a risk if they are not reviewed periodically. Security teams face several challenges:
 
-- Excepciones activas sin uso que mantienen permisos innecesarios
-- Excepciones caducadas con actividad real, sin revisar
-- Renovaciones aprobadas sin evidencia de actividad
-- Solicitudes, aprobaciones y alertas almacenadas por separado
+* Active exceptions with no usage that keep unnecessary permissions in place
+* Expired exceptions with real activity that have not been reviewed
+* Renewals approved without evidence of activity
+* Requests, approvals and alerts stored separately
 
 ---
 
-## La solución
+## The solution
 
-El agente combina dos perspectivas que normalmente se revisan por separado:
+The agent combines two perspectives that are usually reviewed separately:
 
 ```
-Inventario de excepciones DLP  →  quién solicitó, estado, vencimiento
-Export de alertas DLP          →  actividad real por usuario y directiva
+DLP exception inventory  →  who requested it, status, expiry date
+DLP alerts export        →  real activity by user and policy
 ```
 
-En lugar de cruzar esos datos a mano, el agente lo hace automáticamente y devuelve un análisis listo para actuar.
+Instead of correlating this data manually, the agent does it automatically and returns an analysis ready for action.
 
 ---
 
-## Contexto del proceso
+## Process context
 
-El MVP parte de un proceso realista de gestión de excepciones:
+The MVP is based on a realistic exception management process:
 
 ```
-Usuario solicita excepción (Microsoft Forms)
+User requests an exception (Microsoft Forms)
         ↓
-Power Automate registra la solicitud en Excel
+Power Automate records the request in Excel
         ↓
-Aprobación del responsable
+Manager approval
         ↓
-Actualización del estado en el inventario
+Status update in the inventory
         ↓
-Export periódico de alertas DLP
+Periodic export of DLP alerts
         ↓
-Análisis y actualización por el agente
+Analysis and update by the agent
 ```
 
 ---
 
-## Scoring de riesgo
+## Risk scoring
 
-El agente aplica criterios configurables para evaluar cada excepción:
+The agent applies configurable criteria to assess each exception:
 
-| Criterio | Efecto |
-|----------|--------|
-| Excepción caducada | Aumenta el riesgo |
-| Próxima a caducar | Requiere revisión |
-| Muchas alertas recientes | Mayor prioridad |
-| Sin alertas recientes | Valorar retirada |
-| Tipo de dato sensible crítico | Mayor severidad |
-| Canal Endpoint | Mayor exposición potencial |
-
----
-
-## Valor del proyecto
-
-| Antes | Con el agente |
-|-------|---------------|
-| Revisión manual de Excel | Consulta conversacional |
-| Alertas y excepciones separadas | Correlación automática |
-| Priorización subjetiva | Scoring de riesgo |
-| Renovaciones sin evidencia | Decisiones basadas en actividad |
-| Actualización manual del inventario | Actualización asistida |
+| Criterion                    | Effect                    |
+| ---------------------------- | ------------------------- |
+| Expired exception            | Increases risk            |
+| Close to expiry              | Requires review           |
+| High number of recent alerts | Higher priority           |
+| No recent alerts             | Consider removal          |
+| Critical sensitive data type | Higher severity           |
+| Endpoint channel             | Higher potential exposure |
 
 ---
 
-## Usuarios objetivo
+## Project value
 
-Equipos de seguridad · Administradores DLP · GRC · SOC · Responsables de cumplimiento
+| Before                                    | With the agent           |
+| ----------------------------------------- | ------------------------ |
+| Manual Excel review                       | Conversational query     |
+| Alerts and exceptions reviewed separately | Automatic correlation    |
+| Subjective prioritization                 | Risk scoring             |
+| Renewals without evidence                 | Activity-based decisions |
+| Manual inventory update                   | Assisted update          |
 
 ---
 
-## Evolución futura
+## Target users
 
-| Mejora | Valor |
-|--------|-------|
-| Conexión directa con Microsoft Purview | Elimina exports manuales |
-| Power Automate avanzado | Automatiza notificaciones y actualizaciones |
-| Dataverse | Modelo de datos más robusto |
-| Dashboards Power BI | Seguimiento ejecutivo |
-| Integración con ticketing / SIEM | Operación más completa |
+Security teams · DLP administrators · GRC · SOC · Compliance owners
+
+---
+
+## Future evolution
+
+| Improvement                              | Value                               |
+| ---------------------------------------- | ----------------------------------- |
+| Direct connection with Microsoft Purview | Removes manual exports              |
+| Advanced Power Automate flows            | Automates notifications and updates |
+| Dataverse                                | More robust data model              |
+| Power BI dashboards                      | Executive tracking                  |
+| Ticketing / SIEM integration             | More complete operations            |
+
